@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4836b01-f266-441f-b5db-b06ea064f3ff" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/BinarySearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/BinarySearch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/BubbleSort.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/BubbleSort.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/ISearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/ISearch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/ISorter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/ISorter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/InsertionSort.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/InsertionSort.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/SelectionSort.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/SelectionSort.java" afterDir="false" />
-    </list>
+    <list default="true" id="b4836b01-f266-441f-b5db-b06ea064f3ff" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
