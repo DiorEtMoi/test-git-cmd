@@ -3,7 +3,7 @@ package services;
 import model.ListNode;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class LeetCode implements ILeetCode {
@@ -1022,7 +1022,551 @@ public class LeetCode implements ILeetCode {
 
     @Override
     public int maximumWealth(int[][] accounts) {
-        return 0;
+        int maxValue = 0;
+        for(int[] account : accounts){
+            int currentWeath = 0;
+            for(int num : account){
+                currentWeath += num;
+            }
+            maxValue = Math.max(maxValue, currentWeath);
+        }
+        return maxValue;
+    }
+
+    @Override
+    public String mergeAlternately(String word1, String word2) {
+        String[] word1Array = word1.split("");
+        String[] word2Array = word2.split("");
+        String[] mergeArray = new String[word1Array.length + word2Array.length];
+        Arrays.fill(mergeArray, "");
+        int first = 0 ;
+        int second = 0 ;
+        for(int i = 0; i < mergeArray.length; i++){
+            if(i % 2 == 0 && first < word1Array.length){
+                mergeArray[i] = word1Array[first++];
+            }else if (i % 2 != 0 && second < word2Array.length){
+                mergeArray[i] = word2Array[second++];
+            }
+        }
+        return String.join("",mergeArray);
+    }
+
+    @Override
+    public int maxProfitV2(int[] prices) {
+        int res = 0;
+        int min = prices[0];
+        for(int i = 1; i < prices.length; i++){
+            int currentValue = prices[i] - min;
+            if(currentValue > 0){
+                res += currentValue;
+                min = prices[i];
+            }
+            min = Math.min(min, prices[i]);
+        }
+        return res;
+    }
+
+    @Override
+    public void rotate(int[] nums, int k) {
+        int[] res = new int[nums.length];
+        for(int i = 0; i < nums.length; i++){
+            res[(i + k) % nums.length] = nums[i];
+        }
+        for(int i = 0; i < res.length; i++){
+            nums[i] = res[i];
+        }
+    }
+
+    @Override
+    public int prefixCount(String[] words, String pref) {
+        int count = 0;
+        for(String w : words){
+           if(w.startsWith(pref)){
+               count++;
+           }
+        }
+        return count;
+    }
+
+    @Override
+    public int[] findThePrefixCommonArray(int[] A, int[] B) {
+        int length = A.length;
+        int[] res = new int[length];
+        Set<Integer> setA = new HashSet<>();
+        Set<Integer> setB = new HashSet<>();
+        int count = 0;
+        for(int i = 0; i < length; i++){
+            if(!setA.contains(A[i])){
+                setA.add(A[i]);
+                if(setB.contains(A[i])){
+                    count++;
+                }
+            }
+            if(!setB.contains(B[i])){
+                setB.add(B[i]);
+                if(setA.contains(B[i])){
+                    count++;
+                }
+            }
+            res[i] = count;
+        }
+        return res;
+    }
+
+    @Override
+    public String gcdOfStrings(String str1, String str2) {
+        if(!(str1.concat(str2)).equals(str2.concat(str1))){
+            return "";
+        }
+        int gcd = GCD(str1.length(), str2.length());
+
+        return str1.substring(0,gcd);
+    }
+
+    @Override
+    public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
+        int max = Arrays.stream(candies).max().getAsInt();
+        List<Boolean> result = new ArrayList<>();
+        for(int candy : candies){
+            if(candy + extraCandies >= max){
+                result.add(true);
+            }else{
+                result.add(false);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        int length = flowerbed.length;
+        for(int i = 0; i < length; i++){
+            int left = i == 0 ? 0 : flowerbed[i - 1];
+            int right = i == length - 1 ? 0 : flowerbed[i + 1];
+            if(left + right + flowerbed[i] == 0){
+                --n;
+                flowerbed[i] = 1;
+            }
+        }
+        return n <= 0;
+    }
+
+    @Override
+    public String reverseVowels(String s) {
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            while(left < right && !isVowels(Character.toString(s.charAt(left)))){
+                left++;
+            }
+            while(left < right && !isVowels(Character.toString(s.charAt(right)))){
+                right--;
+            }
+            if(isVowels(Character.toString(s.charAt(left))) && isVowels(Character.toString(s.charAt(right)))){
+                s = swapCharacters(s, left, right);
+                left++;
+                right--;
+            }
+        }
+        return s;
+    }
+
+    @Override
+    public String reverseWords(String s) {
+        String[] newS = s.trim().split(" ");
+        for(int i = 0; i < newS.length / 2; i++){
+            String temp = newS[i];
+            newS[i] = newS[newS.length - i - 1];
+            newS[newS.length - i - 1] = temp;
+        }
+        return String.join(" ", newS);
+    }
+
+    @Override
+    public String frequencySort(String s) {
+        Map<Character, Integer> mapCount = new HashMap<>();
+        for(char c : s.toCharArray()){
+            mapCount.put(c, mapCount.getOrDefault(c, 0) + 1);
+        }
+        List<Character> list = new ArrayList<>(mapCount.keySet());
+
+        list.sort((a,b) -> mapCount.get(b) - mapCount.get(a));
+
+        StringBuilder sb = new StringBuilder();
+        for(char c : list){
+            for(int i = mapCount.get(c); i > 0; i--){
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public int jumpingOnClouds(int[] c, int k) {
+        int energy = 100;
+        Set<Integer> numbers = new HashSet<>();
+        for(int i = 0; i < c.length; i = (i + k) % c.length){
+            if(!numbers.contains(i)){
+                numbers.add(i);
+                energy -= 1;
+                if(c[i] == 1){
+                    energy -= 2;
+                }
+            }else{
+                break;
+            }
+        }
+        return energy;
+    }
+
+    @Override
+    public int[][] highestPeak(int[][] isWater) {
+            int m = isWater.length;
+            int n = isWater[0].length;
+            int[][] heights = new int[m][n];
+
+            Queue<int[]> queue = new ArrayDeque<>();
+            for(int i = 0; i < m; i++){
+                for (int j = 0; j < n; j++){
+                    heights[i][j] = isWater[i][j] - 1;
+
+                        if(heights[i][j] == 0){
+                        queue.offer(new int[]{i, j});
+                    }
+                }
+            }
+
+            int[] dirs = {-1, 0, 1, 0, -1};
+            while (!queue.isEmpty()){
+                int[] pos = queue.poll();
+                int x = pos[0];
+                int y = pos[1];
+                for(int i = 0; i < 4; i++){
+                    int newX = x + dirs[i];
+                    int newY = y + dirs[i + 1];
+                    if(newX >= 0 && newX < m && newY >= 0 && newY < n
+                            && heights[newX][newY] == -1){
+                        heights[newX][newY] = heights[x][y] + 1;
+
+                        queue.offer(new int[]{newX, newY});
+                    }
+                }
+            }
+            return heights;
+    }
+
+    @Override
+    public int countServers(int[][] grid) {
+        Queue<int[]> queue = new ArrayDeque<>();
+        int row = grid.length;
+        int col = grid[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if(grid[i][j] == 1){
+                    queue.offer(new int[]{i, j});
+                }
+            }
+        }
+        int[] dirs = {-1, 0, 1, 0, -1};
+        int count = 0;
+        while (!queue.isEmpty()){
+            int[] pos = queue.poll();
+            for(int i = 0; i < 4; i++){
+                int x = pos[0];
+                int y = pos[1];
+                int deltaX = dirs[i];
+                int deltaY = dirs[i + 1];
+                boolean isConnect = false;
+                while(x + deltaX >= 0 && x + deltaX < row && y + deltaY >= 0 && y + deltaY < col){
+                        x += deltaX;
+                        y += deltaY;
+                        if(grid[x][y] == 1){
+                            isConnect = true;
+                            break;
+                        }
+                }
+                if(isConnect){
+                    count++;
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public boolean check(int[] nums) {
+        int countIncrease = 0;
+        for(int i = 0 ; i < nums.length; i++){
+            if(nums[i] > nums[(i+1) % nums.length]){
+                countIncrease++;
+            }
+        }
+        return countIncrease <= 1;
+    }
+
+    @Override
+    public int maxAscendingSum(int[] nums) {
+        int max = nums[0];
+        int sum = max;
+        for(int i = 1; i < nums.length; i++){
+            if(nums[i] > nums[i - 1]){
+                sum += nums[i];
+            }else{
+                sum = 0;
+                sum += nums[i];
+            }
+            max = Math.max(max, sum);
+
+        }
+        return max;
+    }
+
+    @Override
+    public boolean areAlmostEqual(String s1, String s2) {
+        if(s1.equals(s2)){
+            return true;
+        }
+        if(s1.length() != s2.length()){
+            return false;
+        }
+        int mismatch = 0;
+        char c1 = 0;
+        char c2 = 0;
+        for(int i = 0; i < s1.length(); i++){
+            char currentC1 = s1.charAt(i);
+            char currentC2 = s2.charAt(i);
+            if(currentC1 != currentC2){
+                mismatch++;
+                if(mismatch > 2 || (mismatch == 2 && !(c1 == currentC2 && c2 == currentC1))){
+                    return false;
+                }
+                c1 = currentC1;
+                c2 = currentC2;
+            }
+        }
+        return mismatch != 1;
+    }
+
+    @Override
+    public void moveZeroes(int[] nums) {
+        int index = 0;
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i] != 0){
+                int temp = nums[i];
+                nums[i] = nums[index];
+                nums[index] = temp;
+                index++;
+            }
+        }
+    }
+
+    @Override
+    public boolean isSubsequence(String s, String t) {
+        int lengthS = s.length();
+        int lengthT = t.length();
+        int indexS = 0;
+        int indexT = 0;
+        while(indexS < lengthS && indexT < lengthT){
+            char charS = s.charAt(indexS);
+            char charT = t.charAt(indexT);
+            if(charS == charT){
+                indexS++;
+            }
+            indexT++;
+        }
+        return indexS == lengthS;
+    }
+
+    @Override
+    public double findMaxAverage(int[] nums, int k) {
+       int currentSum = 0;
+       for(int i = 0; i < k; i++){
+           currentSum += nums[i];
+       }
+       int max = currentSum;
+       for(int i = k; i < nums.length; i++){
+           currentSum += (nums[i] - nums[i - k]);
+           max = Math.max(max, currentSum);
+       }
+       return max * 1.0 / k;
+    }
+
+    @Override
+    public int tupleSameProduct(int[] nums) {
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for(int i = 0; i < nums.length - 1; i++){
+            for(int j = i + 1; j < nums.length; j++){
+                countMap.merge(nums[i] * nums[j],1,Integer::sum);
+            }
+        }
+        int res = 0;
+        for(int count : countMap.values()){
+            res += count * (count - 1 ) / 2;
+        }
+        return res << 3;
+    }
+
+    @Override
+    public int maxVowels(String s, int k) {
+        int currentVowels = 0;
+        for(int i = 0; i < k; i++){
+            if(isVowels(s.charAt(i) + "")){
+                currentVowels++;
+            }
+        }
+        int maxVowel = currentVowels;
+        for(int i = k; i < s.length(); i++){
+            char currentChar = s.charAt(i);
+            char firstChar = s.charAt(i - k);
+            if(isVowels(firstChar + "")){
+                currentVowels--;
+            }
+            if(isVowels(currentChar + "")){
+                currentVowels++;
+            }
+            maxVowel = Math.max(maxVowel, currentVowels);
+        }
+        return maxVowel;
+    }
+
+    @Override
+    public String clearDigits(String s) {
+        StringBuilder sb = new StringBuilder();
+        int[] dump = new int[s.length()];
+        int index = 0;
+        for(int i = 0 ; i < s.length(); i++){
+            char current = s.charAt(i);
+            if(Character.isDigit(current)){
+                index = i;
+                for(int j = index; j >= 0; j--){
+                    char indexChar = s.charAt(j);
+                    if(!Character.isDigit(indexChar) && dump[j] != -1){
+                        dump[i] = -1;
+                        dump[j] = -1;
+                        break;
+                    }
+                }
+            }
+        }
+        for(int i = 0 ; i < dump.length; i++){
+            char c = s.charAt(i);
+            if(dump[i] != -1){
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public int[] queryResults(int limit, int[][] queries) {
+        Map<Integer, Integer> pairball = new HashMap<>();
+        Map<Integer, Integer> countMap = new HashMap<>();
+        int[] res = new int[queries.length];
+        for(int i = 0; i < queries.length; i++){
+            int ball = queries[i][0];
+            int color = queries[i][1];
+
+            countMap.merge(color, 1, Integer::sum);
+
+            if(pairball.containsKey(ball)){
+                int oldPair = pairball.get(ball);
+                countMap.merge(oldPair, -1, Integer::sum);
+                if(countMap.get(oldPair) == 0){
+                    countMap.remove(oldPair);
+                }
+            }
+            pairball.put(ball, color);
+            res[i] = countMap.size();
+        }
+        return res;
+    }
+
+    @Override
+    public String removeOccurrences(String s, String part) {
+        while(s.contains(part)){
+           s = s.replaceFirst(part, "");
+        }
+        return s;
+    }
+
+    @Override
+    public long countBadPairs(int[] nums) {
+        Map<Integer, Integer> sumMap = new HashMap<>();
+        long goodPair = 0;
+        long maxPair = (long) nums.length * (nums.length - 1) / 2;
+        for(int i = 0; i < nums.length; i++){
+            int firstPair = nums[i] - i;
+            goodPair += sumMap.getOrDefault(firstPair, 0);
+            sumMap.put(firstPair, sumMap.getOrDefault(firstPair, 0) + 1);
+        }
+
+        return  maxPair - goodPair;
+    }
+
+    @Override
+    public int maximumSum(int[] nums) {
+        Map<Integer, List<Integer>> sumMap = new HashMap<>();
+        for (int num : nums) {
+            int sum = calculateEachOfNumber(num);
+            if (!sumMap.containsKey(sum)) {
+                sumMap.put(sum, new ArrayList<>(List.of(num)));
+            } else {
+                sumMap.get(sum).add(num);
+            }
+        }
+        int max = -1;
+        for(Map.Entry<Integer, List<Integer>> entry : sumMap.entrySet()){
+            List<Integer> value = entry.getValue();
+            if(value.size() >= 2){
+                value.sort((o1, o2) -> o2 -o1);
+                int sum = value.get(0) + value.get(1);
+                max = Math.max(max, sum);
+            }
+        }
+
+        return max;
+    }
+
+    @Override
+    public boolean isArraySpecial(int[] nums) {
+        for(int i = 0; i < nums.length; i++){
+            if(i + 1 >= nums.length){
+                break;
+            }
+            int nextValue = nums[i + 1];
+            int current = nums[i];
+            if((nextValue % 2 == 0 && current % 2 == 0) ||
+            (nextValue % 2 != 0 && current % 2 != 0)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int calculateEachOfNumber(int num){
+        int res = 0;
+        while(num != 0){
+            int remain = num % 10;
+            res += remain;
+            num /= 10;
+        }
+        return res;
+    }
+
+    public String swapCharacters(String str, int index1, int index2) {
+        char[] charArray = str.toCharArray();  // Convert String to char array
+
+        // Swap characters at index1 and index2
+        char temp = charArray[index1];
+        charArray[index1] = charArray[index2];
+        charArray[index2] = temp;
+
+        // Convert char array back to String
+        return new String(charArray);
+    }
+    private boolean isVowels(String s){
+        String vowels = "aeiou";
+        return vowels.contains(s.toLowerCase());
     }
 
     private int GCD(int a, int b){
